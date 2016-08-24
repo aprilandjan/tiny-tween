@@ -18,5 +18,6 @@ var onElChange = function () {
 window['a'] = el;
 
 //  implement chain call
-Animator.get(el, {onChange: onElChange}).to({x: 100}, 3000);
-Animator.get(el, {onChange: onElChange}).to({y: 300}, 3000, Ease.backInOut);
+Animator.get(el, {onChange: onElChange}).to({x: 100}, 3000, Ease.cubicInOut)
+    .to({y: 100}, 1000).to({x: 300, y: 500}, 3000, Ease.backInOut);
+// Animator.get(el, {onChange: onElChange}).to({y: 300}, 3000, Ease.backInOut);

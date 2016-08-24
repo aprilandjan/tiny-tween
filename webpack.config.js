@@ -61,7 +61,7 @@ module.exports = {
         hot: false,     //  不需要实时更新，禁用
         // contentBase: '/dist/',  //   内容的基本路径
         host: '0.0.0.0',  //  添加之后可以外部访问
-        noInfo:true,    //  去掉编译过程中的输出信息
+        // noInfo:true,    //  去掉编译过程中的输出信息
         // lazy: true     //   no watching, compile on request
     }
 };
