@@ -3,15 +3,15 @@
 require('../css/style.scss');
 
 import rem from './rem';
-import Animator from './animator';
+import Animator from './tween';
 import Ease from './ease';
 import Element from './element';
 
 //  calculate
 rem.init(750);
 
-var el = new Element('elBox');
-var el1 = new Element('elBox1');
+var el = document.getElementById('elBox');
+var el1 = document.getElementById('elBox1');
 var onElChange = function () {
     // console.log('change...', el.x, el.y);
 };
@@ -28,11 +28,10 @@ var a = {
     }
 }
 
-
 //  implement chain call
-// var anim = Animator.get(el, {onChange: onElChange, onComplete: onElComplete}).to({x: 100}, 3000, Ease.cubicInOut)
-//     .to({y: 100}, 1000).to({x: 300, y: 500}, 3000, Ease.backInOut);
-// Animator.get(el, {onChange: onElChange}).to({y: 300}, 3000, Ease.backInOut);
+var anim = Animator.get(el, {onChange: onElChange, onComplete: onElComplete}).to({x: 100}, 3000, Ease.cubicInOut)
+    .to({y: 100}, 1000).to({x: 300, y: 230}, 3000, Ease.backInOut)
+Animator.get(el).to({y: 600}, 7000, Ease.backInOut);
 
 Animator.get(el1, {loop: true}).to({y:300, x: 123}, 3000, Ease.elasticInOut)
     .wait(1000)
@@ -40,7 +39,6 @@ Animator.get(el1, {loop: true}).to({y:300, x: 123}, 3000, Ease.elasticInOut)
     .to({x: 300, y: 100}, 1000, Ease.circInOut);
 
 window.addEventListener('keydown', (e) => {
-
     switch(String.fromCharCode(e.keyCode).toLowerCase()) {
         case 'k':
             Animator.kill(el1);

@@ -2,6 +2,8 @@
  * Created by Merlin on 16/8/19.
  */
 
+import Element from './element'
+
 window.requestAnimFrame = (function(callback) {
     return window.requestAnimationFrame
         || window.webkitRequestAnimationFrame
@@ -26,7 +28,7 @@ window.cancelAnimationFrame = (function(id) {
 
 //  总的每帧事件
 var _raf = null;
-var _animList = [];
+var _tList = [];
 var _currentTime = 0;
 var _stopTime = 0;
 
@@ -35,12 +37,12 @@ var mapping = function (val, inputMin, inputMax, outputMin, outputMax) {
     return ((outputMax - outputMin) * ((val - inputMin) / (inputMax - inputMin))) + outputMin
 };
 
-var _register = function (anim) {
-    if(_animList.indexOf(anim) != -1){
+var _register = function (tween) {
+    if(_tList.indexOf(tween) != -1){
         return
     }
 
-    _animList.push(anim);
+    _tList.push(tween);
 
     //  如果没有开启, 那么开启
     if(!_raf){
@@ -49,9 +51,9 @@ var _register = function (anim) {
     }
 };
 
-var _unregister = function (anim) {
-    var list = _animList;
-    list.splice(list.indexOf(anim), 1);
+var _unregister = function (tween) {
+    var list = _tList;
+    list.splice(list.indexOf(tween), 1);
 
     if(!list.length) {
         window.cancelAnimationFrame(_raf);
@@ -68,8 +70,8 @@ var _tick = function () {
     _currentTime = now;
 
     if(true){   //delta > 1000 / Animator.fps
-        _animList.forEach((anim, index) => {
-            anim.tick(now);
+        _tList.forEach((tween, index) => {
+            tween.tick(now);
         });
 
         if(_currentTime > _stopTime){
@@ -92,7 +94,7 @@ var stateType = {
     CALL: 2
 }
 
-class Animator {
+class Tween {
 
     /**
      * 可以配置:
@@ -111,6 +113,11 @@ class Animator {
      * @param config
      */
     constructor (obj, config) {
+
+        if(obj instanceof HTMLElement) {
+            obj = Element.get(obj)
+        }
+
         this.obj = obj;
         this.config = config;
         this.states = [];   //  状态列表
@@ -120,11 +127,11 @@ class Animator {
     static get(obj, config) {
 
         if(config && config.override){
-            Animator.kill(obj)
+            Tween.kill(obj)
         }
 
         //  如果动画没开始, 开启动画
-        return new Animator(obj, config);
+        return new Tween(obj, config);
     }
 
     /**
@@ -132,10 +139,11 @@ class Animator {
      * 移除某对象的全部缓动
      *
      * @param obj
+     *
      */
     static kill(obj) {
-        _animList = _animList.filter((anim, index) => {
-            return anim.obj != obj
+        _tList = _tList.filter((tween, index) => {
+            return tween.obj != obj
         })
     }
 
@@ -145,6 +153,7 @@ class Animator {
      * @param target
      * @param duration
      * @param ease, function from Ease.js
+     *
      */
     to (target, duration, ease){
         //  定义一个状态
@@ -318,4 +327,4 @@ class Animator {
 
 // Animator.fps = 60;
 
-export default Animator;
+export default Tween;

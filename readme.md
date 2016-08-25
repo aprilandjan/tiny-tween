@@ -66,8 +66,12 @@ Thanks to createjs/Tweenjs!
     Animator.get(p, config).to({x: 100, y: 100}, 1000);
     ```
 
+### HTMLElement Wrapper
+
+    如果传入的对象是HTMLElement, 那么会使用 ```Element.get```包装起来, 然后使用 x, y, alpha 等属性名对其进行操作 
+
 ### Todo
     
 - global pause
 
-- html element wrapper
+- html element wrapper with multiple attributes display, scale, reg, opacity 等
