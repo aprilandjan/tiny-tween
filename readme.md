@@ -1,7 +1,10 @@
-### 简单的JS缓动
+## 简单的JS缓动
 ---
 处理对象属性值的缓动类库。方便在 CommonJS 环境下使用
+
 Thanks to createjs/Tweenjs!
+
+---
 
 ### API
 

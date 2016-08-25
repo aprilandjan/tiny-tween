@@ -13,6 +13,16 @@ window.requestAnimFrame = (function(callback) {
         };
 })();
 
+window.cancelAnimationFrame = (function(id) {
+    return window.cancelAnimationFrame
+        || window.webkitCancelAnimationFrame
+        || window.mozCancelAnimationFrame
+        || window.oCancelAnimationFrame
+        || window.msCancelAnimationFrame
+        || function(id) {
+            window.clearTimeout(id)
+        }
+})();
 
 //  总的每帧事件
 var _raf = null;
@@ -93,7 +103,9 @@ class Animator {
      *  onComplete,
      *  onCompleteObj,
      *
-     *  override
+     *  override,
+     *
+     *  loop
      *
      * @param obj
      * @param config
@@ -225,7 +237,8 @@ class Animator {
                 }
                 break;
             case stateType.CALL:
-
+                state.duration = 0;
+                _stopTime = state.stopTime = state.startTime = Date.now();
                 break;
         }
     }
@@ -235,11 +248,10 @@ class Animator {
         var state = this.currentState;
 
         //  找到这个状态的百分比
-        var p = (now - state.startTime) / state.duration;
-        if(p > 1) {
+        var p = state.duration == 0 ? 1 : ((now - state.startTime) / state.duration);
+        if (p > 1) {
             p = 1
-        }
-        else if(p < 0) {
+        } else if (p < 0) {
             p = 0
         }
 
@@ -274,7 +286,7 @@ class Animator {
                 let callback = state.callback;
                 let scope = state.scope;
                 let args = state.args;
-                callback.call(scope, args);
+                callback.apply(scope, args);
                 break;
         }
 

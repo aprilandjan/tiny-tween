@@ -10,24 +10,46 @@ class Element {
         else{
             this.el = el;
         }
+
+        this.parseXY()
+    }
+
+    parseXY () {
+        var transform = this.el.style.transform
+        if(transform){
+            var pxs = transform.match(/\(([^)]+)\)/)[1]
+            ps = pxs.split(',')
+            this._x = parseFloat(ps[0]) || 0
+            this._y = parseFloat(ps[1]) || 0
+        }
+        else{
+            this._x = 0;
+            this._y = 0;
+        }
     }
 
     //  x 坐标
     get x () {
-        return this.el.offsetLeft;
+        return this._x
     }
 
     set x (val) {
-        this.el.style.left = val + 'px';
+        this._x = val
+        var x = val + 'px'
+        var y = this.y + 'px'
+        this.el.style.cssText = 'transform: translate(' + x + ',' + y + ')';
     }
 
     //  y 坐标
     get y () {
-        return this.el.offsetTop;
+        return this._y
     }
 
     set y (val) {
-        this.el.style.top = val + 'px';
+        this._y = val
+        var x = this.x + 'px'
+        var y = val + 'px'
+        this.el.style.cssText = 'transform: translate(' + x + ',' + y + ')';
     }
 }
 
