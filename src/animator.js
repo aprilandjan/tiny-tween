@@ -75,6 +75,13 @@ var _tick = function () {
     }
 };
 
+//  定义不同的状态类型
+var stateType = {
+    TO: 0,
+    WAIT: 1,
+    CALL: 2
+}
+
 class Animator {
 
     /**
@@ -84,7 +91,9 @@ class Animator {
      *  onChangeObj,
      *
      *  onComplete,
-     *  onCompleteObj
+     *  onCompleteObj,
+     *
+     *  override
      *
      * @param obj
      * @param config
@@ -96,8 +105,25 @@ class Animator {
     }
 
     static get(obj, config) {
+
+        if(config && config.override){
+            Animator.kill(obj)
+        }
+
         //  如果动画没开始, 开启动画
         return new Animator(obj, config);
+    }
+
+    /**
+     *
+     * 移除某对象的全部缓动
+     *
+     * @param obj
+     */
+    static kill(obj) {
+        _animList = _animList.filter((anim, index) => {
+            return anim.obj != obj
+        })
     }
 
     /**
@@ -111,12 +137,54 @@ class Animator {
 
         //  定义一个状态
         var state = {
+            type: stateType.TO,
             ease: ease,
             duration: duration,
             to: target
         };
 
-        //  把状态推入数组
+        this.states.push(state);
+        this.initState();
+
+        _register(this);
+        return this;
+    }
+
+    /**
+     *
+     * 在当前状态等待多久
+     *
+     * @param duration
+     */
+    wait (duration) {
+        var state = {
+            type: stateType.WAIT,
+            duration: duration
+        }
+
+        this.states.push(state);
+        this.initState();
+
+        _register(this);
+        return this;
+    }
+
+    /**
+     *
+     * 回调
+     *
+     * @param callback
+     * @param scope
+     * @param args 参数数组
+     */
+    call (callback, scope, args) {
+        var state = {
+            type: stateType.CALL,
+            callback: callback,
+            scope: scope,
+            args: args
+        }
+
         this.states.push(state);
         this.initState();
 
@@ -130,55 +198,84 @@ class Animator {
         }
 
         //  暂存当前状态, 作为这个state的启动状态
-        var nextState = this.states[0];
-        var from = {};
-        for(var key in nextState.to){
-            if(nextState.to.hasOwnProperty(key)  && (this.obj.hasOwnProperty(key) || this.obj.__lookupGetter__(key))) {
-                from[key] = this.obj[key];
-            }
-        }
-        this.currentState = nextState;
-        nextState.from = from;
-        nextState.startTime = Date.now();
+        var state = this.states[0];
+        this.currentState = state;
+        switch(state.type) {
+            case stateType.TO:
+                var from = {};
+                for(var key in state.to){
+                    if(state.to.hasOwnProperty(key)  && (this.obj.hasOwnProperty(key) || this.obj.__lookupGetter__(key))) {
+                        from[key] = this.obj[key];
+                    }
+                }
+                state.from = from;
+                state.startTime = Date.now();
+                state.stopTime = state.startTime + state.duration
 
-        if(_stopTime < nextState.startTime + nextState.duration){
-            _stopTime = nextState.startTime + nextState.duration;
+                if(_stopTime < state.stopTime){
+                    _stopTime = state.stopTime;
+                }
+                break;
+            case stateType.WAIT:
+                state.startTime = Date.now();
+                state.stopTime = state.startTime + state.duration
+
+                if(_stopTime < state.stopTime){
+                    _stopTime = state.stopTime;
+                }
+                break;
+            case stateType.CALL:
+
+                break;
         }
     }
 
     tick (now){
-        //  先找到当前所处的状态
+        //  当前所处的状态
         var state = this.currentState;
-        var startTime = state.startTime;
-        var duration = state.duration;
-        var from = state.from;
-        var to = state.to;
-        var ease = state.ease;
 
         //  找到这个状态的百分比
-        var p = (now - startTime) / duration;
+        var p = (now - state.startTime) / state.duration;
         if(p > 1) {
             p = 1
         }
         else if(p < 0) {
             p = 0
         }
-        var ep = p;
-        if(ease && typeof ease == 'function'){
-            ep = ease(p);
-        }
 
-        var obj = this.obj;
-        for(var key in to){
-            //  如果两方面都有这个属性, 那么计算投影值
-            if(to.hasOwnProperty(key)){
-                obj[key] = mapping(ep, 0, 1, from[key], to[key]);
-            }
-        }
+        //  判断状态类型
+        switch(state.type){
+            case stateType.TO:
+                let from = state.from;
+                let to = state.to;
+                let ease = state.ease;
 
-        //
-        if(this.config.onChange){
-            this.config.onChange.call(this.config.onChangeObj);
+                let ep = p;
+                if(ease && typeof ease == 'function'){
+                    ep = ease(p);
+                }
+
+                var obj = this.obj;
+                for(var key in to){
+                    //  如果两方面都有这个属性, 那么计算投影值
+                    if(to.hasOwnProperty(key)){
+                        obj[key] = mapping(ep, 0, 1, from[key], to[key]);
+                    }
+                }
+
+                if(this.config && this.config.onChange){
+                    this.config.onChange.call(this.config.onChangeObj);
+                }
+                break;
+            case stateType.WAIT:
+                //  do nothing
+                break;
+            case stateType.CALL:
+                let callback = state.callback;
+                let scope = state.scope;
+                let args = state.args;
+                callback.call(scope, args);
+                break;
         }
 
         //  此状态结束了
@@ -190,12 +287,16 @@ class Animator {
                 this.initState();
             }
             else {
+                //  no more further states, call onComplete
+                if(this.config && this.config.onComplete){
+                    this.config.onComplete.call(this.config.onCompleteObj)
+                }
                 _unregister(this);
             }
         }
     }
 }
 
-Animator.fps = 60;
+// Animator.fps = 60;
 
 export default Animator;

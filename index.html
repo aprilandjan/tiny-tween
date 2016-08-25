@@ -33,12 +33,37 @@
             font-size: 0.3rem;
             text-align: center;
             position: absolute;
+            opacity: 0.8;
+        }
+
+        .box1 {
+            width: 2rem;
+            display: inline-block;
+            height: 2rem;
+            background-color: #008800;
+            color: #880000;
+            /*position: absolute;*/
+            text-align: center;
+            line-height: 2rem;
+            font-size: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .color-block {
+            height: 2.5rem;
+            background-color: #7f7f7f;
+            opacity: 0.3;
         }
     </style>
 </head>
 <body>
     <div class="wrapper">
         <div class="box" id="elBox">box</div>
+
+        <div class="normal-line">
+            <div class="box1" id="elBox1">WoW</div>
+        </div>
+        <div class="normal-line color-block"></div>
     </div>
 </body>
 </html>
