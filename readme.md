@@ -59,7 +59,9 @@ Thanks to createjs/Tweenjs!
         //  变更回调的作用域
         onChangeObj: scope,
         //  是否覆盖之前的全部缓动, 避免同一个对象的多个缓动实例之间的干扰
-        override: true
+        override: true,
+        //  缓动是否循环
+        loop: true
     }
     Animator.get(p, config).to({x: 100, y: 100}, 1000);
     ```
@@ -67,7 +69,5 @@ Thanks to createjs/Tweenjs!
 ### Todo
     
 - global pause
-
-- config: loop
 
 - html element wrapper

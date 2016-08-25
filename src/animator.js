@@ -114,6 +114,7 @@ class Animator {
         this.obj = obj;
         this.config = config;
         this.states = [];   //  状态列表
+        this.passedStates = []; //  过去了的状态
     }
 
     static get(obj, config) {
@@ -146,7 +147,6 @@ class Animator {
      * @param ease, function from Ease.js
      */
     to (target, duration, ease){
-
         //  定义一个状态
         var state = {
             type: stateType.TO,
@@ -292,18 +292,25 @@ class Animator {
 
         //  此状态结束了
         if(p >= 1){
-            this.states.shift();
+            this.passedStates.push(this.states.shift())
             this.currentState = null;
-
             if(this.states.length) {
                 this.initState();
             }
             else {
-                //  no more further states, call onComplete
-                if(this.config && this.config.onComplete){
-                    this.config.onComplete.call(this.config.onCompleteObj)
+                //  loop, swap states
+                if(this.config && this.config.loop) {
+                    this.states = this.passedStates;
+                    this.passedStates.slice(0);
+                    this.initState();
                 }
-                _unregister(this);
+                else {
+                    //  no more further states, call onComplete
+                    if(this.config && this.config.onComplete){
+                        this.config.onComplete.call(this.config.onCompleteObj)
+                    }
+                    _unregister(this);
+                }
             }
         }
     }

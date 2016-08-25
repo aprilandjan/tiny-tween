@@ -34,12 +34,9 @@ var a = {
 //     .to({y: 100}, 1000).to({x: 300, y: 500}, 3000, Ease.backInOut);
 // Animator.get(el, {onChange: onElChange}).to({y: 300}, 3000, Ease.backInOut);
 
-Animator.get(el1).to({y:300, x: 123}, 3000, Ease.elasticInOut)
+Animator.get(el1, {loop: true}).to({y:300, x: 123}, 3000, Ease.elasticInOut)
     .wait(1000)
     .call(a.print, a, [0, 1, 2])
-    .wait(1000)
-    .call(a.print, a, [1, 2, 3])
-    .wait(3000)
     .to({x: 300, y: 100}, 1000, Ease.circInOut);
 
 window.addEventListener('keydown', (e) => {

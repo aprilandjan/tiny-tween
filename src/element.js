@@ -12,9 +12,11 @@ class Element {
         }
 
         this.parseXY()
+        this.parseScale();
     }
 
     parseXY () {
+        //  题目 transform
         var transform = this.el.style.transform
         if(transform){
             var pxs = transform.match(/\(([^)]+)\)/)[1]
@@ -25,6 +27,18 @@ class Element {
         else{
             this._x = 0;
             this._y = 0;
+        }
+    }
+
+    parseScale () {
+        // Todo 提取 scale(50%, 50%)
+        var transform = this.el.style.transform
+        if(transform) {
+            
+        }
+        else {
+            this._scaleX = 1;
+            this._scaleY = 1;
         }
     }
 
