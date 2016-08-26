@@ -10,28 +10,28 @@ Thanks to createjs/Tweenjs!
 
 - 导入源码
     ```javascript
-    import Animator from './animator'
+    import Tween from './tween'
     ```
 
 - ```get```, `to` 创建实例&开启缓动
     ```javascript
     var p = {x: 0, y: 0}
-    var anim = Animator.get(p)
-    anim.to({x: 100, y: 100}, 1000);
+    var tween = Tween.get(p)
+    tween.to({x: 100, y: 100}, 1000);
     ```
 
 - ```wait```, ```call``` 等待&回调
     ```javascript
-    anim.wait(1000);    //  wait for 1000ms
-    anim.to({x: 300, y: 300}, 1000);    //  tween to target state in 1000ms
-    anim.call(()=>{
+    tween.wait(1000);    //  wait for 1000ms
+    tween.to({x: 300, y: 300}, 1000);    //  tween to target state in 1000ms
+    tween.call(()=>{
         console.log('finished!');   //  called when previous steps are done
     }
     ```
     
 - chained call 链式调用
     ```javascript
-    Animator.get(p).to({x: 100, y: 100}, 1000).wait(300).call(()=>{
+    Tween.get(p).to({x: 100, y: 100}, 1000).wait(300).call(()=>{
         console.log('now x=100, y=100!');
     }).to({x: 300, y: 300}).call(() => {
         console.log('now x=300, y=300!');
@@ -40,8 +40,8 @@ Thanks to createjs/Tweenjs!
 
 - ```kill``` 移除施加对象上的全部缓动
     ```javascript
-    Animator.get(p).to({x: 100, y: 100}, 1000);
-    Animator.kill(p)
+    Tween.get(p).to({x: 100, y: 100}, 1000);
+    Tween.kill(p)
     ```
 
 - ```get``` configs
@@ -63,7 +63,7 @@ Thanks to createjs/Tweenjs!
         //  缓动是否循环
         loop: true
     }
-    Animator.get(p, config).to({x: 100, y: 100}, 1000);
+    Tween.get(p, config).to({x: 100, y: 100}, 1000);
     ```
 
 ### HTMLElement Wrapper
