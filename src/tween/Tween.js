@@ -3,6 +3,7 @@
  */
 
 import ElementWrapper from './ElementWrapper'
+import Ease from './Ease'
 
 window.requestAnimFrame = (function(callback) {
     return window.requestAnimationFrame
@@ -91,7 +92,8 @@ var _tick = function () {
 var stateType = {
     TO: 0,
     WAIT: 1,
-    CALL: 2
+    CALL: 2,
+    APPEND: 3
 }
 
 class Tween {
@@ -114,7 +116,7 @@ class Tween {
      */
     constructor (obj, config) {
 
-        if(obj instanceof HTMLElement) {
+        if(typeof obj === 'string' || obj instanceof HTMLElement) {
             obj = ElementWrapper.get(obj)
             this.isElement = true
         }
@@ -180,6 +182,21 @@ class Tween {
         return this;
     }
 
+    append (target, duration, ease) {
+        var state = {
+            type: stateType.APPEND,
+            ease: ease,
+            duration: duration,
+            to: target
+        }
+
+        this.states.push(state)
+        this.initState();
+
+        _register(this)
+        return this
+    }
+
     /**
      *
      * 在当前状态等待多久
@@ -232,12 +249,21 @@ class Tween {
         this.currentState = state;
         switch(state.type) {
             case stateType.TO:
-                var from = {};
-                for(var key in state.to){
+            case stateType.APPEND:
+                let from = {};
+                for(let key in state.to){
                     if(state.to.hasOwnProperty(key)  && (this.obj.hasOwnProperty(key) || this.obj.__lookupGetter__(key))) {
-                        from[key] = this.obj[key];
+                        from[key] = this.obj[key];  //  start state
+                        if(state.type == stateType.APPEND) {
+                            state.to[key] += from[key]
+                        }
                     }
                 }
+
+                if(state.type == stateType.APPEND) {
+                    state.type = stateType.TO
+                }
+
                 state.from = from;
                 state.startTime = Date.now();
                 state.stopTime = state.startTime + state.duration
@@ -251,7 +277,7 @@ class Tween {
                 state.stopTime = state.startTime + state.duration
 
                 if(_stopTime < state.stopTime){
-                    _stopTime = state.stopTime;
+                    _stopTime = state.stopTime
                 }
                 break;
             case stateType.CALL:
@@ -276,6 +302,7 @@ class Tween {
         //  判断状态类型
         switch(state.type){
             case stateType.TO:
+            case stateType.APPEND:
                 let from = state.from;
                 let to = state.to;
                 let ease = state.ease;
@@ -345,6 +372,7 @@ class Tween {
     }
 }
 
-// Animator.fps = 60;
+Tween.Ease = Ease
+Tween.Wrapper = ElementWrapper
 
 export default Tween;

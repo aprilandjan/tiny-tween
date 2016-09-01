@@ -79,3 +79,5 @@ Thanks to createjs/Tweenjs!
 - global kill & reset
 
 - html element wrapper with multiple attributes display, scale, reg, opacity 等
+
+- append: 在原有值的基础上额外增加
