@@ -2,7 +2,7 @@
  * Created by Merlin on 16/8/19.
  */
 
-import Element from './element'
+import ElementWrapper from './ElementWrapper'
 
 window.requestAnimFrame = (function(callback) {
     return window.requestAnimationFrame
@@ -115,7 +115,11 @@ class Tween {
     constructor (obj, config) {
 
         if(obj instanceof HTMLElement) {
-            obj = Element.get(obj)
+            obj = ElementWrapper.get(obj)
+            this.isElement = true
+        }
+        else if(obj instanceof ElementWrapper) {
+            this.isElement = true
         }
 
         this.obj = obj;
@@ -138,11 +142,16 @@ class Tween {
      *
      * 移除某对象的全部缓动
      *
-     * @param obj
+     * @param obj, DOM Element, Element ID, ElementWrapper instance
      *
      */
     static kill(obj) {
         _tList = _tList.filter((tween, index) => {
+            //  如果是字符串, 认为是id, 查找wrapper
+            if(typeof obj === 'string' || obj instanceof HTMLElement){
+                obj = ElementWrapper.get(obj)
+            }
+
             return tween.obj != obj
         })
     }
@@ -280,8 +289,19 @@ class Tween {
                 for(var key in to){
                     //  如果两方面都有这个属性, 那么计算投影值
                     if(to.hasOwnProperty(key)){
-                        obj[key] = mapping(ep, 0, 1, from[key], to[key]);
+                        var val = mapping(ep, 0, 1, from[key], to[key]);
+                        if(this.isElement) {
+                            obj.invalidate(key, val)
+                        }
+                        else{
+                            obj[key] = val;
+                        }
                     }
+                }
+
+                //
+                if(this.isElement){
+                    obj.validate()
                 }
 
                 if(this.config && this.config.onChange){
