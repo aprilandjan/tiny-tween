@@ -2,6 +2,7 @@
  * Created by Merlin on 16/8/22.
  */
 
+import Matrix2D from './Matrix2D'
 
 var instanceMap = new Map()
 
@@ -28,134 +29,27 @@ class ElementWrapper {
             values = matrix.split(',')
         }
 
-        //  any
-        this._dx = +values[4]
-        this._dy = +values[5]
+        //  ...values works like a charm
+        this.matrix = new Matrix2D(...values)
 
-        //  0~1
-        this._a = +values[0]
-        this._d = +values[3]
-
-        //  any
-        this._b = +values[1]
-        this._c = +values[2]
+        this.matrix.extract(this)
+        // this.x
+        // this.y
+        // this.scaleX
+        // this.scaleY
+        // this.rotation
+        this.regX = 0
+        this.regY = 0
     }
 
-    // http://www.cs.mtu.edu/~shene/COURSES/cs3621/NOTES/geometry/geo-tran.html
-    set rotation (deg) {
-
-        deg -= this.rotation
-
-        var rad = deg * Math.PI / 180
-        var cos = Math.cos(rad);
-        var sin = Math.sin(rad);
-
-        var a1 = this._a;
-        var b1 = this._b;
-
-        this._a = a1 * cos + this._c * sin;
-        this._b = b1 * cos + this._d * sin;
-        this._c = -a1 * sin + this._c * cos;
-        this._d = -b1 * sin + this._d * cos;
-
-        this.el.style.cssText = 'transform: ' + this.getTransformMatrix({})
-    }
-
-    //  -180 ~ 180
-    get rotation () {
-        return Math.round(Math.atan2(this._b, this._a) * (180 / Math.PI));
-    }
-
-    get scaleX () {
-        return this._a
-    }
-
-    set scaleX (val) {
-        this._a = val;
-    }
-
-    get scaleY () {
-        return this._d
-    }
-
-    set scaleY (val) {
-        this._d = val;
-    }
-
-    get skewX () {
-        return this._b
-    }
-
-    set skewX (val) {
-        this._b = val;
-    }
-
-    get skewY () {
-        return this._c
-    }
-
-    set skewY (val) {
-        this._c = val;
-    }
-
-    //  x 坐标
-    get x () {
-        return this._dx
-    }
-
-    set x (val) {
-        this._dx = val
-    }
-
-    //  y 坐标
-    get y () {
-        return this._dy
-    }
-
-    set y (val) {
-        this._dy = val
-    }
-
-    // 标记某属性失效
-    invalidate (key, value) {
-        if(!this._isInvalidate){
-            this._invalidProps = {}
-            this._isInvalidate = true
-        }
-
-        this._invalidProps[key] = value
+    reset () {
+        this.el.style.cssText = 'transform: none'
     }
 
     validate () {
-        if(this._isInvalidate) {
-            this.el.style.cssText = 'transform: ' + this.getTransformMatrix(this._invalidProps)
-        }
-    }
-
-    // matrix(a, b, c, d, e, f)
-    //  a-c-dx
-    //  b-d-dy
-    //  0-0-1
-    // a (m11) Horizontal scaling.
-    // b (m12) Horizontal skewing.
-    // c (m21) Vertical skewing.
-    // d (m22) Vertical scaling.
-    // e (dx) Horizontal moving.
-    // f (dy) Vertical moving.
-    getTransformMatrix (obj) {
-        this._a = obj.hasOwnProperty('scaleX') ? obj.scaleX : this.scaleX
-        this._b = obj.hasOwnProperty('skewX') ? obj.skewX : this.skewX
-        this._c = obj.hasOwnProperty('skewY') ? obj.skewY : this.skewY
-        this._d = obj.hasOwnProperty('scaleY') ? obj.scaleY : this.scaleY
-        this._dx = obj.hasOwnProperty('x') ? obj.x : this.x
-        this._dy = obj.hasOwnProperty('y') ? obj.y : this.y
-
-        //Todo: apply animation before it or after it?
-        if(obj.hasOwnProperty('rotation')) {
-            this.rotation = obj.rotation
-        }
-
-        return `matrix(${this._a}, ${this._b}, ${this._c}, ${this._d}, ${this._dx}, ${this._dy})`
+        var o = this
+        this.el.style.cssText = 'transform: '
+            + this.matrix.applyWrapper(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY).toString()
     }
 
     static get (el) {

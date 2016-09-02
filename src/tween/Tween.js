@@ -308,21 +308,14 @@ class Tween {
                 let ease = state.ease;
 
                 let ep = p;
-                if(ease && typeof ease == 'function'){
+                if(p != 1 && ease && typeof ease == 'function'){
                     ep = ease(p);
                 }
 
                 var obj = this.obj;
                 for(var key in to){
-                    //  如果两方面都有这个属性, 那么计算投影值
                     if(to.hasOwnProperty(key)){
-                        var val = mapping(ep, 0, 1, from[key], to[key]);
-                        if(this.isElement) {
-                            obj.invalidate(key, val)
-                        }
-                        else{
-                            obj[key] = val;
-                        }
+                        obj[key] = mapping(ep, 0, 1, from[key], to[key]);
                     }
                 }
 
