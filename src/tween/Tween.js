@@ -93,7 +93,8 @@ var stateType = {
     TO: 0,
     WAIT: 1,
     CALL: 2,
-    APPEND: 3
+    APPEND: 3,
+    SET: 4
 }
 
 class Tween {
@@ -171,9 +172,14 @@ class Tween {
         var state = {
             type: stateType.TO,
             ease: ease,
-            duration: duration,
+            duration: duration || 0,
             to: target
         };
+
+        if(this.isElement && target.hasOwnProperty('scale')) {
+            target.scaleY = target.scaleX = target.scale
+            delete target['scale']
+        }
 
         this.states.push(state);
         this.initState();
@@ -186,12 +192,42 @@ class Tween {
         var state = {
             type: stateType.APPEND,
             ease: ease,
-            duration: duration,
+            duration: duration || 0,
             to: target
+        }
+
+        if(this.isElement && target.hasOwnProperty('scale')) {
+            target.scaleY = target.scaleX = target.scale
+            delete target['scale']
         }
 
         this.states.push(state)
         this.initState();
+
+        _register(this)
+        return this
+    }
+
+    /**
+     * 设置此 tween obj 的属性
+     *
+     * set 是立即的过程, 不会等到下一帧
+     *
+     * @param target
+     */
+    set (target) {
+        var state = {
+            type: stateType.SET,
+            to: target
+        }
+
+        if(this.isElement && target.hasOwnProperty('scale')) {
+            target.scaleX = target.scaleY = target.scale
+            delete target['scale']
+        }
+
+        this.states.push(state)
+        this.initState()
 
         _register(this)
         return this
@@ -284,12 +320,19 @@ class Tween {
                 state.duration = 0;
                 _stopTime = state.stopTime = state.startTime = Date.now();
                 break;
+            case stateType.SET:
+                state.duration = 0;     //  will not wait util next tick
+                this.tick()
+                break;
         }
     }
 
     tick (now){
         //  当前所处的状态
         var state = this.currentState;
+        if(!this.currentState) {
+            return
+        }
 
         //  找到这个状态的百分比
         var p = state.duration == 0 ? 1 : ((now - state.startTime) / state.duration);
@@ -312,10 +355,16 @@ class Tween {
                     ep = ease(p);
                 }
 
-                var obj = this.obj;
-                for(var key in to){
+                let obj = this.obj;
+                for(let key in to){
                     if(to.hasOwnProperty(key)){
-                        obj[key] = mapping(ep, 0, 1, from[key], to[key]);
+                        let v = mapping(ep, 0, 1, from[key], to[key])
+                        if(this.isElement) {
+                            obj.invalidate(key, v)
+                        }
+                        else{
+                            obj[key] = v
+                        }
                     }
                 }
 
@@ -337,6 +386,24 @@ class Tween {
                 let args = state.args;
                 callback.apply(scope, args);
                 break;
+            case stateType.SET:
+                var to = state.to;
+                var obj = this.obj;
+                for(var key in to){
+                    if(to.hasOwnProperty(key)){
+                        if(this.isElement) {
+                            obj.invalidate(key, to[key])
+                        }
+                        else{
+                            obj[key] = to[key]
+                        }
+                    }
+                }
+
+                if(this.isElement){
+                    obj.validate()
+                }
+                break;
         }
 
         //  此状态结束了
@@ -348,13 +415,13 @@ class Tween {
             }
             else {
                 //  loop, swap states
+                //  如果是set调用的,会导致循环
                 if(this.config && this.config.loop) {
                     this.states = this.passedStates;
                     this.passedStates.slice(0);
                     this.initState();
                 }
                 else {
-                    //  no more further states, call onComplete
                     if(this.config && this.config.onComplete){
                         this.config.onComplete.call(this.config.onCompleteObj)
                     }

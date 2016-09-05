@@ -29,29 +29,35 @@ var a = {
 //  implement chain call
 // var t = Tween.get(el, {onChange: onElChange, onComplete: onElComplete}).to({x: 100}, 3000, Tween.Ease.cubicInOut)
 //     .to({y: 100}, 1000).to({x: 300, y: 230}, 3000, Tween.Ease.backInOut)
-Tween.get('elBox', {override:true, loop: true})
-    .to({x: window.innerWidth / 2, y: window.innerHeight / 2}, 1000, Tween.Ease.cubicIn)
-    .append({y: 300, rotation:90, scaleX: 0.5}, 1000, Tween.Ease.backInOut)
-    .append({y: -300}, 1000, Tween.Ease.cubicInOut)
-    .append({y: 200}, 1000, Tween.Ease.cubicInOut)
-    .append({y: -200}, 1000, Tween.Ease.cubicInOut)
-    .append({y: 100}, 1000, Tween.Ease.cubicInOut)
-    .append({y: -100}, 1000, Tween.Ease.cubicInOut)
-    .append({x: 300}, 1000, Tween.Ease.cubicInOut)
-    .append({x: -200}, 1000, Tween.Ease.cubicInOut)
-    .append({x: 100}, 1000, Tween.Ease.cubicInOut)
-    .append({x: -50}, 1000, Tween.Ease.cubicInOut)
-    .append({x: 0, y: 0, rotation: 90}, 2000, Tween.Ease.cubicInOut)
-    .append({x: -80, y: 80, rotation: 180}, 1000, Tween.Ease.cubicInOut)
-    .append({x: 60, y: -60, rotation: 270}, 1000, Tween.Ease.cubicInOut)
-    .append({x: -40, y: 40, rotation: 360}, 1000, Tween.Ease.cubicInOut)
+// Tween.get('elBox', {override:true, loop: true})
+//     .to({x: window.innerWidth / 2, y: window.innerHeight / 2}, 1000, Tween.Ease.cubicIn)
+//     .append({y: 300, rotation:90, scaleX: 0.5}, 1000, Tween.Ease.backInOut)
+//     .append({y: -300}, 1000, Tween.Ease.cubicInOut)
+//     .append({y: 200}, 1000, Tween.Ease.cubicInOut)
+//     .append({y: -200}, 1000, Tween.Ease.cubicInOut)
+//     .append({y: 100}, 1000, Tween.Ease.cubicInOut)
+//     .append({y: -100}, 1000, Tween.Ease.cubicInOut)
+//     .append({x: 300}, 1000, Tween.Ease.cubicInOut)
+//     .append({x: -200}, 1000, Tween.Ease.cubicInOut)
+//     .append({x: 100}, 1000, Tween.Ease.cubicInOut)
+//     .append({x: -50}, 1000, Tween.Ease.cubicInOut)
+//     .append({x: 0, y: 0, rotation: 90}, 2000, Tween.Ease.cubicInOut)
+//     .append({x: -80, y: 80, rotation: 180}, 1000, Tween.Ease.cubicInOut)
+//     .append({x: 60, y: -60, rotation: 270}, 1000, Tween.Ease.cubicInOut)
+//     .append({x: -40, y: 40, rotation: 360}, 1000, Tween.Ease.cubicInOut)
 
-Tween.get('block', {loop: false}).to({x: 100}, 3000, Tween.Ease.elasticInOut)
-    // .wait(1000)
-    // .call(a.print, a, [0, 1, 2])
-    .to({y: 100, regX: -100}, 1000, Tween.Ease.circInOut);
+Tween.get('#block', {loop: true})
+    .set({opacity: 0, scale:0})
+    .to({x: 100, scale:1, opacity: 0.5}, 3000, Tween.Ease.cubicInOut)
+    .to({x: 200}, 1000, Tween.Ease.cubicInOut)
+    .set({x: 100, scale:0.5})
+    .to({x: 50, y: 200, opacity: 1}, 1000)
+    .to({x: 200, y: 0, rotation:90, scaleX: 0.3, opacity: 0.5}, 3000)
 
-window['a'] = Tween.Wrapper.get('elBox')
+// Tween.get('#block')
+//     .set({x: 100, y: 50, opacity: 1, rotation: 30})
+
+window['a'] = Tween.Wrapper.get('#elBox')
 
 window.addEventListener('keydown', (e) => {
     switch(String.fromCharCode(e.keyCode).toLowerCase()) {
@@ -63,7 +69,7 @@ window.addEventListener('keydown', (e) => {
             var x = Math.random() * window.innerWidth
             var y = Math.random() * window.innerHeight
             var d = Math.random() * 3000 + 1000
-            Tween.get('block', {override: true}).to({x: x, y: y, scaleX: Math.random(), scaleY: Math.random(), rotation: Math.random() * 360}, d, Tween.Ease.cubicInOut)
+            Tween.get('#block', {override: true}).to({x: x, y: y, scaleX: Math.random(), scaleY: Math.random(), rotation: Math.random() * 360}, d, Tween.Ease.cubicInOut)
             t.append({x: getRandom(), y: getRandom()}, d, Tween.Ease.elasticInOut)
             break;
     }

@@ -1,8 +1,8 @@
 ## 简单的JS缓动
 ---
-处理对象属性值的缓动类库。方便在 CommonJS 环境下使用
+处理对象属性值的缓动类库
 
-Thanks to createjs/Tweenjs!
+对 HTMLElement 进行封装, 通过修改这些元素的 `inline style(transform, opacity)`, 提供这些元素基于 `x, y, scaleX, scaleX, scaleY, skewX, skewY, rotation, opacity` 等常用2D变换的快速缓动 
 
 ---
 
@@ -68,9 +68,13 @@ Thanks to createjs/Tweenjs!
 
 ### HTMLElementWrapper
 
-    如果传入的对象是HTMLElement or HTMLElementID, 那么会使用 ```Element.get```包装起来, 然后使用 x, y, alpha 等属性名对其进行操作 
+    - 如果传入的对象是HTMLElement or HTMLElementID, 那么会使用 ```Element.get```包装起来, 然后使用 x, y, alpha 等属性名对其进行操作 
+    
+    - 对同一个 HTMLElement, ```Tween``` 返回的是这个元素的单例
 
 ### Todo
+    
+- tween.set: bug when loop needs to be solved
     
 - global pause
 
@@ -78,4 +82,9 @@ Thanks to createjs/Tweenjs!
 
 - global kill & reset
 
-- html element wrapper with multiple attributes display, opacity
+- alternative
+
+- html element wrapper
+    - ~transform~
+    - ~opacity~
+    - scale instead of scaleX scaleY, if scaleX != scaleY, then both of them animated to scale
