@@ -1,5 +1,5 @@
 {
-  "name": "webpack-babel-template",
+  "name": "simple-tweener",
   "version": "1.0.0",
   "description": "just test",
   "main": "app.js",
@@ -10,7 +10,7 @@
   },
   "author": "aprilandjan",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "babel-core": "^6.0.0",
     "babel-loader": "^6.0.0",
     "babel-plugin-transform-runtime": "^6.0.0",
@@ -32,5 +32,8 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.13.0",
     "webpack-dev-server": "^1.14.1"
+  },
+  "dependencies": {
+
   }
 }

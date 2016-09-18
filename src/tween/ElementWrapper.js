@@ -22,7 +22,6 @@ class ElementWrapper {
     }
 
     init () {
-
         var styles = window.getComputedStyle(this.el);
 
         //===============
@@ -100,6 +99,24 @@ class ElementWrapper {
         }
 
         this.el.style.cssText = styles.join('; ')
+    }
+
+    /**
+     * props: {
+     *  x, y, scaleX, scaleY, skewX, skewY, regX, regY
+     * }
+     * @param props
+     */
+    validateNow (props) {
+        if (props && typeof props === 'object') {
+            for (var key in props) {
+                if (props.hasOwnProperty(key)) {
+                    this.invalidate(key, props[key])
+                }
+            }
+        }
+
+        this.validate()
     }
 
     static get (el) {
