@@ -1,14 +1,15 @@
-## 简单的JS缓动
----
-处理对象属性值的缓动类库
+## Tiny Tween
+> A tiny javascript Tween library, supplies fast tween on object prop values. 
+Also Wrap up with HTMLElement with specific props such as ``x, y, scaleX, scaleX, scaleY, skewX, skewY, rotation, opacity` to make it useful when targeting html element.
 
-对 HTMLElement 进行封装, 通过修改这些元素的 `inline style(transform, opacity)`, 提供这些元素基于 `x, y, scaleX, scaleX, scaleY, skewX, skewY, rotation, opacity` 等常用2D变换的快速缓动 
+> 极简的js 缓动类库, 提供对象属性值的快速缓动.
+也对 HTMLElement 进行了封装, 提供这些元素基于 `x, y, scaleX, scaleX, scaleY, skewX, skewY, rotation, opacity` 等常用2D变换的快速缓动 
 
 ---
 
 ### API
 
-- 导入源码
+- 引入
 
     ```javascript
     import Tween from './tween'
