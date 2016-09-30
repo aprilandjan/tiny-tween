@@ -3,7 +3,7 @@
 require('../css/style.scss');
 
 import rem from './rem';
-import Tween from './tween/Tween';
+import Tween from './tween';
 
 //  calculate
 rem.init(750);
@@ -27,8 +27,8 @@ var a = {
 }
 
 //  implement chain call
-var t = Tween.get(el, {onChange: onElChange, onComplete: onElComplete}).to({x: 100}, 3000, Tween.Ease.cubicInOut)
-    .to({y: 100}, 1000).to({x: 300, y: 230}, 3000, Tween.Ease.backInOut)
+// var t = Tween.get(el, {onChange: onElChange, onComplete: onElComplete}).to({x: 100}, 3000, Tween.Ease.cubicInOut)
+//     .to({y: 100}, 1000).to({x: 300, y: 230}, 3000, Tween.Ease.backInOut)
 Tween.get('#elBox', {override:true, loop: true})
     .to({x: window.innerWidth / 2, y: window.innerHeight / 2}, 1000, Tween.Ease.cubicIn)
     .append({y: 300, rotation:90, scaleX: 0.5}, 1000, Tween.Ease.backInOut)
@@ -50,8 +50,8 @@ Tween.get('#block', {loop: true})
     .set({opacity: 1, scaleX:2, scaleY:0.5})
     .to({scale:1}, 3000)
 
-// Tween.get('#block')
-//     .set({x: 100, y: 50, opacity: 1, rotation: 30})
+Tween.get('#block')
+    .set({x: 100, y: 50, opacity: 1, rotation: 30})
 
 window['a'] = Tween
 
@@ -68,7 +68,10 @@ window.addEventListener('keydown', (e) => {
             t.append({x: getRandom(), y: getRandom()}, d, Tween.Ease.elasticInOut)
             break;
         case 'p':
-            Tween.pausedAll(true)
+            Tween.pauseAll()
+            break
+        case 'l':
+            Tween.resumeAll()
             break
     }
 })

@@ -1,9 +1,9 @@
 ## Tiny Tween
 > A tiny javascript Tween library, supplies fast tween on object prop values. 
-Also Wrap up with HTMLElement with specific props such as ``x, y, scaleX, scaleX, scaleY, skewX, skewY, rotation, opacity` to make it useful when targeting html element.
+Also Wrap up with HTMLElement with specific props such as ``x, y, scale, scaleX, scaleX, skewX, skewY, rotation, opacity` to make it useful when targeting html element.
 
 > 极简的js 缓动类库, 提供对象属性值的快速缓动.
-也对 HTMLElement 进行了封装, 提供这些元素基于 `x, y, scaleX, scaleX, scaleY, skewX, skewY, rotation, opacity` 等常用2D变换的快速缓动 
+也对 HTMLElement 进行了封装, 提供这些元素基于 `x, y, scale, scaleX, scaleY, skewX, skewY, rotation, opacity` 等常用2D变换的快速缓动 
 
 ---
 
@@ -120,7 +120,7 @@ Also Wrap up with HTMLElement with specific props such as ``x, y, scaleX, scaleX
 
 ### Todo
 
-- global pause
+- ~~global pause & resume~~
 
 - ~~global kill~~
 

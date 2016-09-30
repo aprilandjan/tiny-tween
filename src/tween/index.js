@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /**
  * Created by Merlin on 16/8/19.
  */
@@ -30,8 +32,7 @@ window.cancelAnimationFrame = (function(id) {
 //  总的每帧事件
 var _raf = null;
 var _tList = [];
-var _currentTime = 0;
-var _stopTime = 0;
+var _lastTickTime;
 var _isPaused = false
 
 //  投影值
@@ -48,7 +49,7 @@ var _register = function (tween) {
 
     //  如果没有开启, 那么开启
     if(!_raf){
-        _currentTime = Date.now();
+        _lastTickTime = Date.now();
         _raf = window.requestAnimationFrame(_tick);
     }
 };
@@ -66,27 +67,16 @@ var _unregister = function (tween) {
 //  总的帧事件
 var _tick = function () {
     var now = Date.now();
-    //  tick duration
-    var delta = now - _currentTime;
-    //  current time edge
-    _currentTime = now;
+    var delta = now - _lastTickTime
+    _lastTickTime = now
 
-    if(true && !_isPaused){   //delta > 1000 / fps
-        _tList.forEach((tween, index) => {
-            _tweenTick(tween, now)
+    if(!_isPaused){   //delta > 1000 / fps
+        _tList.forEach((tween) => {
+            _tweenTick(tween, delta)
         });
+    }
 
-        if(_currentTime > _stopTime){
-            window.cancelAnimationFrame(_tick);
-            _raf = null;
-        }
-        else{   //  继续动画
-            _raf = window.requestAnimationFrame(_tick);
-        }
-    }
-    else{   //  没到时间间隔, 继续动画,
-        _raf = window.requestAnimationFrame(_tick);
-    }
+    _raf = window.requestAnimationFrame(_tick);
 };
 
 var _readState = function (t) {
@@ -116,28 +106,18 @@ var _readState = function (t) {
             }
 
             state.from = from;
-            state.startTime = Date.now();
-            state.stopTime = state.startTime + state.duration
-
-            if(_stopTime < state.stopTime){
-                _stopTime = state.stopTime;
-            }
+            state.elapsedTime = 0;
             break;
         case stateType.WAIT:
-            state.startTime = Date.now();
-            state.stopTime = state.startTime + state.duration
-
-            if(_stopTime < state.stopTime){
-                _stopTime = state.stopTime
-            }
+            state.elapsedTime = 0;
             break;
         case stateType.CALL:
             state.duration = 0;
-            _stopTime = state.stopTime = state.startTime = Date.now();
+            state.elapsedTime = 0;
             break;
         case stateType.SET:
             state.duration = 0;     //  will not wait util next tick
-            _stopTime = state.stopTime = state.startTime = Date.now();
+            state.elapsedTime = 0
             _assignProps(t, state, 1)
             break;
     }
@@ -163,15 +143,17 @@ var _assignProps = function (t, state, p) {
     }
 }
 
-var _tweenTick = function (t, now) {
+var _tweenTick = function (t, delta) {
     //  当前所处的状态
     var state = t.currentState;
     if(!t.currentState) {
         return
     }
 
+    state.elapsedTime += delta
+
     //  找到这个状态的百分比
-    var p = state.duration == 0 ? 1 : ((now - state.startTime) / state.duration);
+    var p = state.duration == 0 ? 1 : (state.elapsedTime / state.duration);
     if (p > 1) {
         p = 1
     } else if (p < 0) {
