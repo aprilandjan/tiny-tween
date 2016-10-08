@@ -1,12 +1,5 @@
-"use strict";
-
-require('../css/style.scss');
-
-import rem from './rem';
-import Tween from './tween';
-
-//  calculate
-rem.init(750);
+import Tween from '../../src/index';
+require('./index.css');
 
 var el = document.getElementById('elBox');
 var el1 = document.getElementById('elBox1');
@@ -21,8 +14,8 @@ var onElComplete = function () {
 var a = {
     value: 100,
     print (a, b, c) {
-        // console.log('print this', this, this.value);
-        // console.log('print args', a, b, c)
+        console.log('print this', this, this.value);
+        console.log('print args', a, b, c)
     }
 }
 
@@ -79,3 +72,4 @@ window.addEventListener('keydown', (e) => {
 var getRandom = function() {
     return 200 * (Math.random() - 0.5)
 }
+

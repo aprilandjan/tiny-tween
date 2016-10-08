@@ -132,3 +132,9 @@ Also Wrap up with HTMLElement with specific props such as ``x, y, scale, scaleX,
     - ~~scale instead of scaleX scaleY, if scaleX != scaleY, then both of them animated to scale~~
     
 - tiny-tween
+
+### Dev
+
+- 项目使用 [npm-lib-seed](https://github.com/4f2e/npm-lib-seed) 构建
+- 开发: `npm run server`
+- 发布: `npm run build`
