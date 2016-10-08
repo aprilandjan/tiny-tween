@@ -130,3 +130,5 @@ Also Wrap up with HTMLElement with specific props such as ``x, y, scale, scaleX,
     - ~~transform~~
     - ~~opacity~~
     - ~~scale instead of scaleX scaleY, if scaleX != scaleY, then both of them animated to scale~~
+    
+- tiny-tween

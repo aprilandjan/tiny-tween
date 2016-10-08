@@ -1,12 +1,11 @@
 {
   "name": "tiny-tween",
   "version": "1.0.0",
-  "description": "just test",
+  "description": "A tiny javascript Tween library, supplies fast tween on object prop values.",
   "main": "app.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev webpack-dev-server",
-    "build": "cross-env NODE_ENV=build webpack",
-    "publish": "cross-env NODE_ENV=build webpack"
+    "build": "rollup -o"
   },
   "author": "aprilandjan",
   "license": "ISC",
