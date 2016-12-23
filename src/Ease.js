@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 //  source codes from createjs/tweenjs
 //  https://github.com/CreateJS/TweenJS/blob/master/src/tweenjs/Ease.js
 

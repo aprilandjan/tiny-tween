@@ -1,7 +1,7 @@
 {
   "name": "tiny-tween",
   "version": "0.0.1",
-  "description": "A tiny javascript Tween library, supplies fast tween on object prop values.",
+  "description": "A tiny javascript Tween library, supplies fast tweening on object prop values.",
   "author": "merlin.ye",
   "license": "MIT",
   "keywords": [
@@ -61,7 +61,7 @@
     "build": "babel-node tools/build",
     "prepublish": "npm run build",
     "start": "easystatic start docs",
-    "server": "babel-node dev/server.js"
+    "dev": "babel-node dev/server.js"
   },
   "dependencies": {}
 }

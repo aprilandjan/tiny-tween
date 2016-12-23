@@ -23,6 +23,7 @@ const config = {
   },
   cache: true,
   debug: true,
+  devtool: 'source-map',
   module: {
     loaders: [{
       test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -46,7 +47,7 @@ const config = {
   plugins: [
     new ExtractTextPlugin('[name].css'),
     new HtmlWebpackPlugin({
-      filename: './dev/index.html',
+      filename: 'index.html',
       template: './dev/index.html',
       inject: true
     })
