@@ -101,13 +101,16 @@ var _tick = function () {
   var delta = now - _lastTickTime
   if (delta >= _fpsInterval) {
     _lastTickTime = now
-    _tList.forEach((item, index) => {
-      if (item instanceof Tween) {
-        _tweenTick(item, delta)
-      } else {
-        item[0].call(item[1])
-      }
-    })
+    //  if paused, do not call tween tick
+    if (!_isPaused) {
+      _tList.forEach((item, index) => {
+        if (item instanceof Tween) {
+          _tweenTick(item, delta)
+        } else {
+          item[0].call(item[1])
+        }
+      })
+    }
   }
 
   if (!_tList.length) {
@@ -117,7 +120,10 @@ var _tick = function () {
 }
 
 var _pushState = function (t, state) {
-  // Todo
+  t.states.push(state)
+  _readState(t)
+  _register(t)
+  return t
 }
 
 var _readState = function (t) {
@@ -187,7 +193,7 @@ var _assignProps = function (t, state, p) {
 var _tweenTick = function (t, delta) {
   //  当前所处的状态
   var state = t.currentState
-  if(!t.currentState) {
+  if(!t.currentState || t.paused) {
     return
   }
 
@@ -389,10 +395,7 @@ class Tween {
       delete target['scale']
     }
 
-    this.states.push(state);
-    _readState(this);
-    _register(this);
-    return this;
+    return _pushState(this, state)
   }
 
   append (target, duration, ease) {
@@ -408,10 +411,7 @@ class Tween {
       delete target['scale']
     }
 
-    this.states.push(state)
-    _readState(this);
-    _register(this)
-    return this
+    return _pushState(this, state)
   }
 
   /**
@@ -432,10 +432,7 @@ class Tween {
       delete target['scale']
     }
 
-    this.states.push(state)
-    _readState(this);
-    _register(this)
-    return this
+    return _pushState(this, state)
   }
 
   /**
@@ -450,10 +447,7 @@ class Tween {
       duration: duration
     }
 
-    this.states.push(state);
-    _readState(this);
-    _register(this);
-    return this;
+    return _pushState(this, state)
   }
 
   /**

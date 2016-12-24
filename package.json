@@ -1,9 +1,13 @@
 {
   "name": "tiny-tween",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A tiny javascript Tween library, supplies fast tweening on object prop values.",
   "author": "merlin.ye",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:aprilandjan/tiny-tween.git"
+  },
   "keywords": [
     "javascript",
     "tween"
