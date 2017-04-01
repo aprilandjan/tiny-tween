@@ -12,9 +12,9 @@ Also Wrap up with HTMLElement with specific props such as ``x, y, scale, scaleX,
 - 引入
 
     ```javascript
-    import Tween from './tween'
+    import Tween from 'tween'
     ```
-    
+
 - ```Tween.Ticker``` 动画的时钟对象。通过它可以定义FPS、注册以及删除自定义回调。
 
     ```javascript
@@ -148,19 +148,17 @@ Also Wrap up with HTMLElement with specific props such as ``x, y, scale, scaleX,
 
 ### Todo
 
-- ~~global pause & resume~~
-
-- ~~global kill~~
-
 - alternative loop
-
-- ~~html element wrapper~~
-    - ~~transform~~
-    - ~~opacity~~
-    - ~~scale instead of scaleX scaleY, if scaleX != scaleY, then both of them animated to scale~~
 
 ### Dev
 
 - 项目使用 [npm-lib-seed](https://github.com/4f2e/npm-lib-seed) 构建
 - 开发: `npm run dev`
 - 发布: `npm run build
+
+
+### Change Log
+
+#### 2017.04.01
+
+- add

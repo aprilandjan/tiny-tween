@@ -2,6 +2,7 @@
  * Created by Merlin on 16/8/22.
  */
 
+/* eslint-disable */
 import Matrix2D from './Matrix2D'
 
 var instanceMap = new Map()

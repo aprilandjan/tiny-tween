@@ -1,6 +1,7 @@
 /**
  * Created by Merlin on 16/8/19.
  */
+/* eslint-disable */
 
 import ElementWrapper from './ElementWrapper'
 import Ease from './Ease'
@@ -30,6 +31,7 @@ window.cancelAnimationFrame = (function(id) {
 //  总的每帧事件
 var _raf = null
 var _tList = []
+var _cbList = []
 var _lastTickTime
 var _isPaused = false
 var _id = 0
@@ -46,13 +48,14 @@ var _register = function (a, b) {
     }
     _tList.push(a);
   } else {  //  register function
-    for (var i = 0; i < _tList.length; i++) {
-      var item = _tList[i]
+    for (var i = 0; i < _cbList.length; i++) {
+      var item = _cbList[i]
       if (item instanceof Array && item[0] === a && item[1] === b) {
         return
       }
     }
-    _tList.push([a, b])
+    _cbList.push([a, b])
+     window.__t_cb_n__ = _cbList.length
   }
 
   //  start raf
@@ -69,11 +72,13 @@ var _unregister = function (a, b) {
       _tList.splice(_tList.indexOf(a), 1)
     }
   } else {
-    for (var i = 0; i < _tList.length; i++) {
-      var item = _tList[i]
+    for (var i = 0; i < _cbList.length; i++) {
+      var item = _cbList[i]
       if (item instanceof Array && item[0] === a && item[1] === b) {
-        _tList.splice(i, 1)
-        break
+        _cbList.splice(i, 1)
+        // Tip: just to show how many callbacks are registered currently
+        window.__t_cb_n__ = _cbList.length
+        return
       }
     }
   }
@@ -104,16 +109,15 @@ var _tick = function () {
     //  if paused, do not call tween tick
     if (!_isPaused) {
       _tList.forEach((item, index) => {
-        if (item instanceof Tween) {
-          _tweenTick(item, delta)
-        } else {
-          item[0].call(item[1])
-        }
+        _tweenTick(item, delta)
+      })
+      _cbList.forEach((item, index) => {
+        item[0].call(item[1])
       })
     }
   }
 
-  if (!_tList.length) {
+  if (!(_tList.length + _cbList.length)) {
     window.cancelAnimationFrame(_raf)
     _raf = null
   }
