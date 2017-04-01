@@ -161,4 +161,6 @@ Also Wrap up with HTMLElement with specific props such as ``x, y, scale, scaleX,
 
 #### 2017.04.01
 
-- add
+- 修复了通过 `Tikcer` 注册及删除自定义回调时的错误，并分离自定义回调和缓动实例，以保证每一帧内都是先执行完全部的缓动，再按照注册顺序执行自定义回调。
+
+- 给 `window` 对象增加了一个属性 `__t_cb_n__` 指示当前激活的自定义回调数。
